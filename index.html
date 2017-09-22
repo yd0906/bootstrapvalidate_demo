@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<title>bootstrapValidator 使用的例子</title>
+    <!-- 必须的文件 -->
+	<script src="res/tools/jquery-1.11.1.min.js"></script>
+	<script src="res/tools/bootstrap.js"></script>
+	<script src="res/tools/bootstrapValidator.js"></script>
+	<script src="res/tools/jquery.bootstrap-growl.js"></script>
+	<link href="res/tools/bootstrap.css" rel="stylesheet">
+	<link href="res/tools/bootstrapValidator.css" rel="stylesheet">
+
+	<link href="favicon.ico" rel="shortcut icon" />
+	<!-- 引入页面样式 -->
+	<link href="css/rate.css" rel="stylesheet">
+    <!-- 页面逻辑文件 -->
+    <script src="res/rate/rate.js"></script>
+    
+    <script type="text/javascript">
+    	$(function(){
+    		$(".nav-tabs > li > a").click(function(){
+    			$(".tab-pane").removeClass("active");
+    			$(".nav-tabs > li").removeClass("active");
+    			$(this).parent().addClass("active");
+    			$(""+$(this).attr("href")).addClass("active");
+    		});
+    	})
+    </script>
+</head>
+<body>
+	<ul class="nav nav-tabs" id="myTab">
+	  <li class="active"><a href="#jbxx">基本信息</a></li>
+	  <li><a href="#flxx">费率信息</a></li>
+	</ul>
+	<form action="" method="post" class="definewidth m20" id="merchantForm" >
+		<div class="tab-content">
+		    <div class="tab-pane active" id="jbxx">
+		  	    <table class="table table-bordered table-hover definewidth m10" style="width:500px;">
+					<tr>
+						<td colspan="4" >基本信息</td>
+					</tr>
+					<div id="mask" class="mask"></div>    
+					<tr>
+						<td  class="tableleft" style="text-align: right">MCC类型:</td>
+						<td><select style="width: 50%;" id="mccType" onchange="selectMccType(this)">
+							<option value=""></option>
+							<option value="BZ">标准类</option>
+							<option value="YH">优惠类</option>
+							<option value="JM">减免类</option>
+							<option value="TSJF">特殊计费类</option>
+						</select></td>
+						
+					</tr>
+					<tr>
+						<td class="tableleft" style="text-align: right" >  分润类型：</td>
+						<td>	
+							<select  style="width: 50%;" id="profitType" onchange="setfeeRate()">
+							</select>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="tab-pane" id="flxx">
+				<table class="table table-bordered table-hover definewidth m10">
+					<tr>
+						<td colspan="4" >费率信息</td>
+					</tr>
+					<tr>
+						<td width="10%" class="tableleft" style="text-align: right">结算方式：</td>
+						<td width="35%">
+							<select id="fl_jsfs" onchange="setfeeRate()" >
+								<option value="T1">T+1</option>
+								<option value="D1">D+1</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="tableleft" style="text-align: right">借记卡费率：</td>
+						<td style=" white-space:nowrap;">
+							<input  id="flxx_jjkfl" type="text" name="jjkfeeRate" style="float:left"/>%
+							<span id="flxx_jjkfl_error" style="padding-left: 10px;"></span>
+						</td>
+						<td class="tableleft" style="text-align: right">借记卡是否封顶：</td>
+						<td>
+							<select id="flxx_jjksffd">
+								<option value="0">是</option>
+								<option value="1">否</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="tableleft" style="text-align: right">借记卡封顶：</td>
+						<td style=" white-space:nowrap;">
+						   <input  id="flxx_xykfd" type="text" name="capAmt" />元
+						   <span id="flxx_xykfd_error" style="padding-left: 10px;"></span>
+						</td>
+						<td class="tableleft" style="text-align: right">信用卡费率：</td>
+						<td style=" white-space:nowrap;">
+						   <input id="flxx_xykfl"  type="text" name="xykfeeRate" />%
+						   <span id="flxx_xykfl_error" style="padding-left: 10px;"></span>
+						</td>
+					</tr>
+					<tr>
+						<td class="tableleft" style="text-align: right"> 增收手续费：</td> 
+						<td white-space:nowrap;">
+						   <input id="flxx_zssxf"  type="text" name="addFeeAmt" />元
+						   <span id="flxx_zssxf_error" style="padding-left: 10px;"></span>
+						</td>
+						<td class="tableleft" style="text-align: right">扫码常用费率：</td>
+						<td>
+							<select id="mRateCodeNew" name="scanCode">
+								<option value="">请选择</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="tableleft" style="text-align: right"> 微信扫码支付：</td>
+						<input type="hidden" name="supportCodePays" id="supportCodePays">
+						<td >
+							<select id="QR_WECHAT" onchange="openOrNot('QR_WECHAT');" >
+								<option value="Y">开通</option>
+								<option value="N">不开通</option>
+							</select>
+						</td>
+						<td class="tableleft" style="text-align: right">交易费率：</td>
+						<td ><input type="text" id='jyfl_wxsmzf'  name="wxFeeRate" />%</td>
+					</tr>
+					<tr>
+						<td class="tableleft" style="text-align: right"> 支付宝扫码支付：</td>
+						<td >
+							<select id="QR_ALIPAY" onchange="openOrNot('QR_ALIPAY')">
+								<option value="Y">开通</option>
+								<option value="N">不开通</option>
+							</select>
+						</td>
+						<td class="tableleft" style="text-align: right">交易费率：</td>
+						<td ><input type="text" id="jyfl_zfbsmzf" onblur="testNumber('jyfl_zfbsmzf')" name="zfbFeeRate" />%</td>
+					</tr>
+					<tr>
+						<td class="tableleft" style="text-align: right"> 银联云闪付扫码支付：</td>
+						<td >
+							<select id="QR_UNIONPAY" onchange="openOrNot('QR_UNIONPAY')" >
+								<option value="Y">开通</option>
+								<option value="N">不开通</option>
+							</select>
+						</td>
+						<td class="tableleft" style="text-align: right">交易费率：</td>
+						<td ><input type="text" id="jyfl_ylysfsmzf"  name="ylysfFeeRate" />%</td>
+					</tr>
+					<tr>
+						<td class="tableleft" style="text-align: right">信用卡费率：</td>
+						<td  colspan="3"><input type="text" id="jyfl_xykylysfsmzf"  name="ylysfFeeRateXyk" />%</td>
+					</tr>
+					 <tr>
+						<td colspan="4" >增值服务</td>
+					 </tr>
+					 <tr>
+						<td class="tableleft" style="text-align: right">增值服务类型：</td>
+						<td  colspan="3">
+							<select id="flxx_zzfwlx" onchange="bktZzfw();" name="settleWayZzfw">
+								<option value="">不开通</option>
+								<option value="TS">T+S：实时结算</option>
+								<option value="D0">D+0： 自然日体现结算</option>
+							</select>
+						</td>
+					</tr>
+					 <tr>
+						<td class="tableleft" style="text-align: right">借记卡费率：</td>
+						<td style=" white-space:nowrap;">
+							<input  id="flxx_zzfw_jjkfl" type="text" name="jjkfeeRateZzfw" />%
+							<span id="flxx_zzfw_jjkfl_error" style="padding-left: 10px;"></span>
+						</td>
+						<td class="tableleft" style="text-align: right">借记卡是否封顶：</td>
+						<td>
+							<select id="flxx_zzfw_jjksffd">
+								<option value="">请选择</option>
+								<option value="0">是</option>
+								<option value="1">否</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="tableleft" style="text-align: right">借记卡封顶：</td>
+						<td style=" white-space:nowrap;">
+							<input  id="flxx_zzfw_xykfd" type="text" name="capAmtZzfw" />元
+							<span id="flxx_zzfw_xykfd_error" style="padding-left: 10px;"></span>
+						</td>
+						<td class="tableleft" style="text-align: right">信用卡费率：</td>
+						<td style=" white-space:nowrap;">
+							<input id="flxx_zzfw_xykfl" type="text" name="xykfeeRateZzfw" />%
+							<span id="flxx_zzfw_xykfl_error" style="padding-left: 10px;"></span>
+						</td>
+					</tr>
+					<tr>
+						<td class="tableleft" style="text-align: right"> 增收手续费：</td> 
+						<td style=" white-space:nowrap;">
+							<input id="flxx_zzfw_zssxf" type="text" name="addFeeAmtZzfw" />元
+							<span id="flxx_zzfw_zssxf_error" style="padding-left: 10px;"></span>
+						</td>
+						<td class="tableleft" style="text-align: right">增收费率：</td>
+						<td style=" white-space:nowrap;">
+							<input type="text" id="flxx_zzfw_zsfl" name="feeRateZzfw">%
+							<span id="flxx_zzfw_zsfl_error" style="padding-left: 10px;"></span>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div style="text-align: center;margin-top:25px">
+		    <button type="button" class="btn btn-primary" onclick="submitForm('BC')">保存</button>&nbsp;&nbsp;
+		    <button type="button" class="btn btn-primary" onclick="submitForm('TJ')">提交</button>&nbsp;&nbsp;
+		</div>
+	</form>
+</body>
+</html>

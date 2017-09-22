@@ -1,0 +1,28 @@
+bootstrapValidator对动态生成的表单进行校验，需要调用方法：addField。
+方法：addField(field,option);   field可以是表单的name也可以是jQuery对象
+举例
+    $("form").bootstrapValidator("addField",$("[name='roleName']"));
+    (需要注意的是如果有多个同name表单，只会对第一个进行校验)
+    或
+    $("form").bootstrapValidator("addField","roleName");
+
+一个完整的例子
+    $("form").bootstrapValidator("addField", "roleName", {
+       validators: {
+           notEmpty: {
+               message: '名称不能为空'
+           },
+           stringLength: {
+               min: 1,
+               max: 50,
+               message: '名称长度必须小于50位'
+           },
+           regexp: {
+               regexp: /^[^&]*$/,
+               message: "不能包含&字符"
+           }
+       }
+   });
+
+移除校验api如下：
+    $("form").bootstrapValidator('removeField','roleName');
